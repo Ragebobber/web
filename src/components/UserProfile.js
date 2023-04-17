@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import { Grid, Paper, Stack, TextField } from "@mui/material";
+import React from "react";
+import { Grid, Stack, TextField } from "@mui/material";
 import { observer } from "mobx-react-lite";
 
 const UserProfile = observer((props) => {

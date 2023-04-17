@@ -6,44 +6,40 @@ import UserSubscription from "../components/UserSubscription";
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import { getUser, getUserSubs } from "../http/UserHttp";
+import { useNavigate } from "react-router-dom";
+import { AUTH_ROUTE } from "../util/Consts";
 
 const UserPage = observer(() => {
   const { user, userSubs } = useContext(Context);
 
   const [menuValue, setMenuValue] = useState("Profile");
   const [loading, setLoading] = useState(true);
+  const navigator = useNavigate();
 
   const menuClickHandle = (value) => {
     setMenuValue(value);
   };
 
   useEffect(() => {
-    const getCurrentUser = () => {
-      getUser()
-        .then((res) => {
-          user.setUser(res);
-        })
-        .catch((error) => {
-          user.setIsAuth(false);
-          console.log(error);
-        })
-        .finally(() => setLoading(false));
-    };
+    getUser()
+      .then((res) => {
+        user.setUser(res);
+      })
+      .catch((error) => {
+        user.setIsAuth(false);
+        console.log(error);
+      })
+      .finally(() => setLoading(false));
 
-    const getCurrnetSubs = () => {
-      getUserSubs()
-        .then((res) => {
-          userSubs.setUserSubs(res);
-          console.log("response subs", res);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-
-    getCurrentUser();
-    getCurrnetSubs();
-  }, []);
+    getUserSubs()
+      .then((res) => {
+        userSubs.setUserSubs(res);
+        console.log("response subs", res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [user, userSubs]);
 
   const getComponent = () => {
     switch (menuValue) {
@@ -51,6 +47,10 @@ const UserPage = observer(() => {
         return <UserProfile user={user} />;
       case "Subscription":
         return <UserSubscription subs={userSubs.userSubs} />;
+      case "LogOut":
+        localStorage.clear();
+        navigator(AUTH_ROUTE);
+        break;
       default:
         return <UserProfile />;
     }
