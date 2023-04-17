@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 
 import "../styles/AuthPage.css";
 import {
@@ -15,10 +15,9 @@ import {
 } from "@mui/material";
 import { login, registration } from "../http/UserHttp";
 import { ResponseStatuses, Roles, USER_ROUTE } from "../util/Consts";
-import { Route, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Context } from "../index";
 import { observer } from "mobx-react-lite";
-
 
 const AuthPage = observer(() => {
   const { user } = useContext(Context);
@@ -97,7 +96,12 @@ const AuthPage = observer(() => {
       {showGradient ? (
         <div className={"overlay"}></div>
       ) : (
-        <video src={process.env.BGVIDEO_PATH} loop className={"bgVideo"} autoPlay />
+        <video
+          src={process.env.BGVIDEO_PATH}
+          loop
+          className={"bgVideo"}
+          autoPlay
+        />
       )}
       <div className="content">
         <Card>

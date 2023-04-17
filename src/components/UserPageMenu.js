@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Divider,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  Paper,
-} from "@mui/material";
+import { ListItemText, MenuItem, MenuList, Paper } from "@mui/material";
 
 const UserPageMenu = (props) => {
   const { menuClickHandle, currentItem } = props;
@@ -18,6 +12,10 @@ const UserPageMenu = (props) => {
     {
       id: 2,
       name: "Subscription",
+    },
+    {
+      id: 3,
+      name: "LogOut",
     },
   ];
 
