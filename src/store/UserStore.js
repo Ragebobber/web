@@ -7,6 +7,7 @@ export default class UserStore {
     this._userRole = Roles.USER;
     this._isAdmin = false;
     this._user = {};
+    this._users = [];
     makeAutoObservable(this);
   }
 
@@ -40,5 +41,11 @@ export default class UserStore {
 
   setIsAdmin(value) {
     this._isAdmin = this._isAuth && value;
+  }
+  get allUsers() {
+    return this._users;
+  }
+  setAllUsers(value) {
+    return (this._users = value);
   }
 }
