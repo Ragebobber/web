@@ -1,12 +1,41 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { getAllUsers } from "../../http/UserHttp";
+import { blockUser, getAllUsers } from "../../http/UserHttp";
 import { Context } from "../../index";
-import { Box } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 import { observer } from "mobx-react-lite";
+import { UserStatuses } from "../../util/Consts";
+
+const toolbar = (props) => {
+  const { user, handleClickFn } = props;
+
+  const getStatus = () => {
+    return user.status === UserStatuses.ACTIVE ? "Block user" : "Active user";
+  };
+
+  const btns = [
+    {
+      id: 0,
+      label: getStatus(),
+    },
+  ];
+
+  return (
+    <Grid container spacing={2} sx={{ p: 1 }}>
+      {btns.map((btn) => (
+        <Grid item xs={3} key={btn.id}>
+          <Button variant="outlined" onClick={() => handleClickFn(btn.id)}>
+            {btn.label}
+          </Button>
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
 
 const AdminUsersPage = observer(() => {
   const { user } = useContext(Context);
+  const [selectedRow, setSelectedRow] = useState({});
   const columns = [
     { field: "id", headerName: "ID", type: "number", flex: 0 },
     {
@@ -41,6 +70,35 @@ const AdminUsersPage = observer(() => {
     },
   ];
 
+  const rowClick = ({ row }) => {
+    if (selectedRow?.id === row.id) {
+      setSelectedRow({});
+      return;
+    }
+    setSelectedRow(row);
+  };
+
+  const toolbarClickHandle = (val) => {
+    console.log(val);
+    switch (val) {
+      case 0:
+        blockUser(selectedRow)
+          .then((res) => {
+            console.log(res);
+            user.setAllUsers(localUpdateTable(res));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+    }
+  };
+
+  const localUpdateTable = (res) => {
+    setSelectedRow({});
+    return user.allUsers.map((elem) => (elem.id === res.id ? res : elem));
+  };
+
   useEffect(() => {
     getAllUsers().then((res) => {
       user.setAllUsers(res);
@@ -55,6 +113,19 @@ const AdminUsersPage = observer(() => {
         rows={user.allUsers}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        onRowClick={rowClick}
+        rowSelectionModel={
+          Object.keys(selectedRow).length !== 0 ? selectedRow.id : 0
+        }
+        slots={{
+          toolbar: Object.keys(selectedRow).length !== 0 ? toolbar : null,
+        }}
+        slotProps={{
+          toolbar: {
+            handleClickFn: toolbarClickHandle,
+            user: selectedRow,
+          },
+        }}
         autoHeight
       />
     </Box>
