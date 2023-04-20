@@ -11,3 +11,7 @@ export const ResponseStatuses = {
   SUCCESS: "SUCCESS",
   ERROR: "ERROR",
 };
+
+export const UserStatuses = {
+  ACTIVE: "ACTIVE",
+};
