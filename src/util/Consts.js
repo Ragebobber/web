@@ -15,3 +15,8 @@ export const ResponseStatuses = {
 export const UserStatuses = {
   ACTIVE: "ACTIVE",
 };
+
+export const ProductStatus = {
+  ACTIVE: "ACTIVE",
+  DISABLE: "DISABLE",
+};

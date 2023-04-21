@@ -50,9 +50,24 @@ const AdminUserSubscription = observer((props) => {
       });
   };
 
+  const handleAddSubscription = () => {
+    console.log("add Sub");
+  };
+
   return (
     <Dialog onClose={onClose} open={open} maxWidth="md" fullWidth>
-      <DialogTitle>Subscriptions</DialogTitle>
+      <DialogTitle>
+        <Grid container>
+          <Grid item xs={6}>
+            <Typography variant={"h6"}>Subscriptions</Typography>
+          </Grid>
+          <Grid item xs={6} sx={{ textAlign: "end" }}>
+            <Button variant={"outlined"} onClick={handleAddSubscription}>
+              Add subscription
+            </Button>
+          </Grid>
+        </Grid>
+      </DialogTitle>
       <DialogContent>
         <DialogContentText>Login: {userProp?.login}</DialogContentText>
         <Stack spacing={2}>
