@@ -5,6 +5,8 @@ import { Context } from "../../index";
 import { Box, Button, Grid } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { UserStatuses } from "../../util/Consts";
+import AdminUserSubscription from "./AdminUserSubscription";
+import userSubscription from "../UserSubscription";
 
 const toolbar = (props) => {
   const { user, handleClickFn } = props;
@@ -18,12 +20,16 @@ const toolbar = (props) => {
       id: 0,
       label: getStatus(),
     },
+    {
+      id: 1,
+      label: "User subscription",
+    },
   ];
 
   return (
-    <Grid container spacing={2} sx={{ p: 1 }}>
+    <Grid container spacing={1} sx={{ p: 1 }}>
       {btns.map((btn) => (
-        <Grid item xs={3} key={btn.id}>
+        <Grid item xs={2} key={btn.id}>
           <Button variant="outlined" onClick={() => handleClickFn(btn.id)}>
             {btn.label}
           </Button>
@@ -36,6 +42,9 @@ const toolbar = (props) => {
 const AdminUsersPage = observer(() => {
   const { user } = useContext(Context);
   const [selectedRow, setSelectedRow] = useState({});
+  const [showUserSubs, setShowUserSubs] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
+
   const columns = [
     { field: "id", headerName: "ID", type: "number", flex: 0 },
     {
@@ -79,7 +88,6 @@ const AdminUsersPage = observer(() => {
   };
 
   const toolbarClickHandle = (val) => {
-    console.log(val);
     switch (val) {
       case 0:
         blockUser(selectedRow)
@@ -91,12 +99,23 @@ const AdminUsersPage = observer(() => {
             console.log(error);
           });
         break;
+      case 1:
+        setCurrentUser(
+          user.allUsers.find((user) => user.id === selectedRow.id) || {}
+        );
+        setShowUserSubs(true);
+        break;
     }
   };
 
   const localUpdateTable = (res) => {
     setSelectedRow({});
     return user.allUsers.map((elem) => (elem.id === res.id ? res : elem));
+  };
+
+  const userSubscriptionClose = () => {
+    setCurrentUser({});
+    setShowUserSubs(false);
   };
 
   useEffect(() => {
@@ -128,6 +147,13 @@ const AdminUsersPage = observer(() => {
         }}
         autoHeight
       />
+      {Object.keys(currentUser).length !== 0 && (
+        <AdminUserSubscription
+          open={showUserSubs}
+          onClose={userSubscriptionClose}
+          userProp={currentUser}
+        />
+      )}
     </Box>
   );
 });
