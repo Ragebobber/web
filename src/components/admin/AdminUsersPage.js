@@ -6,7 +6,6 @@ import { Box, Button, Grid } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { UserStatuses } from "../../util/Consts";
 import AdminUserSubscription from "./AdminUserSubscription";
-import userSubscription from "../UserSubscription";
 
 const toolbar = (props) => {
   const { user, handleClickFn } = props;
@@ -92,7 +91,6 @@ const AdminUsersPage = observer(() => {
       case 0:
         blockUser(selectedRow)
           .then((res) => {
-            console.log(res);
             user.setAllUsers(localUpdateTable(res));
           })
           .catch((error) => {
@@ -104,6 +102,9 @@ const AdminUsersPage = observer(() => {
           user.allUsers.find((user) => user.id === selectedRow.id) || {}
         );
         setShowUserSubs(true);
+        break;
+      default:
+        console.log("error click");
         break;
     }
   };
@@ -121,7 +122,6 @@ const AdminUsersPage = observer(() => {
   useEffect(() => {
     getAllUsers().then((res) => {
       user.setAllUsers(res);
-      console.log(res);
     });
   }, [user]);
 

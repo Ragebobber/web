@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  Grid,
   IconButton,
   InputLabel,
   MenuItem,
@@ -14,17 +13,17 @@ import {
   Select,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import { ProductStatus } from "../../util/Consts";
 import CloseIcon from "@mui/icons-material/Close";
-import { addProduct } from "../../http/ProductHttp";
+import { addProduct, edditProduct } from "../../http/ProductHttp";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 
 const AddProductDialog = observer((props) => {
   const { productStore } = useContext(Context);
-  const { onClose, open } = props;
+  const { onClose, open, edditProps } = props;
+
   const [productStatus, setProductStatus] = useState(ProductStatus.ACTIVE);
   const [productName, setProductName] = useState("");
   const [productDescr, setProductDescr] = useState("");
@@ -49,6 +48,22 @@ const AddProductDialog = observer((props) => {
       });
   };
 
+  const edditProductHandle = () => {
+    const data = {
+      id: edditProps.id,
+      name: productName,
+      description: productDescr,
+    };
+    edditProduct(data)
+      .then((res) => {
+        productStore.setAllProducts(localUpdateProducts(res));
+        onClose();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const edditNameHandle = (event) => {
     setProductName(event.target.value);
   };
@@ -60,10 +75,31 @@ const AddProductDialog = observer((props) => {
     return productName?.length === 0 || productDescr?.length === 0;
   };
 
+  const openHandle = () => {
+    return open;
+  };
+
+  const hasEdditProps = () => {
+    return Object.keys(edditProps).length !== 0;
+  };
+
+  const localUpdateProducts = (res) => {
+    return productStore.allProducts.map((product) =>
+      product.id === res.id ? res : product
+    );
+  };
+
+  useEffect(() => {
+    setProductName(edditProps.name);
+    setProductDescr(edditProps.description);
+    //setProductStatus(ProductStatus[edditProps.status])
+  }, [edditProps]);
+
   return (
-    <Dialog onClose={onClose} open={open}>
+    <Dialog onClose={onClose} open={openHandle()}>
       <DialogTitle>
-        Add new product
+        {hasEdditProps() ? "Eddit product" : " Add new product"}
+
         {onClose ? (
           <IconButton
             aria-label="close"
@@ -85,39 +121,52 @@ const AddProductDialog = observer((props) => {
             variant={"outlined"}
             label={"Product Name"}
             sx={{ mt: 1 }}
+            value={productName}
             onChange={edditNameHandle}
           />
           <TextField
             variant={"outlined"}
             label={"Product description"}
+            value={productDescr}
             onChange={edditDescriptionHande}
           />
-
-          <FormControl>
-            <InputLabel>Product status</InputLabel>
-            <Select
-              variant={"outlined"}
-              value={productStatus}
-              onChange={handleProductStatusChange}
-              input={<OutlinedInput label="Product status" />}
-            >
-              {Object.keys(ProductStatus).map((key) => (
-                <MenuItem value={key} key={key}>
-                  {key}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          {!hasEdditProps() && (
+            <FormControl>
+              <InputLabel>Product status</InputLabel>
+              <Select
+                variant={"outlined"}
+                value={productStatus}
+                onChange={handleProductStatusChange}
+                input={<OutlinedInput label="Product status" />}
+              >
+                {Object.keys(ProductStatus).map((key) => (
+                  <MenuItem value={key} key={key}>
+                    {key}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button
-          variant={"outlined"}
-          onClick={addProductHandle}
-          disabled={isBtnDisabled()}
-        >
-          Add product
-        </Button>
+        {!hasEdditProps() ? (
+          <Button
+            variant={"outlined"}
+            onClick={addProductHandle}
+            disabled={isBtnDisabled()}
+          >
+            Add product
+          </Button>
+        ) : (
+          <Button
+            variant={"outlined"}
+            onClick={edditProductHandle}
+            disabled={isBtnDisabled()}
+          >
+            Save
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

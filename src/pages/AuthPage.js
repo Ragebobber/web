@@ -54,7 +54,6 @@ const AuthPage = observer(() => {
           })
           .catch((error) => {
             setAlertType("error");
-            console.log(error);
           });
         break;
       case "2":
@@ -65,7 +64,6 @@ const AuthPage = observer(() => {
           })
           .catch((error) => {
             setAlertType("error");
-            console.log("error", error);
           });
         break;
       default:
