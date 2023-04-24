@@ -5,8 +5,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
-  Card,
-  CardContent,
   Dialog,
   DialogContent,
   DialogContentText,

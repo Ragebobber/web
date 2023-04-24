@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Grid, Stack } from "@mui/material";
-import { getProducts } from "../../http/ProductHttp";
+import { activeProduct, getProducts } from "../../http/ProductHttp";
 import { Context } from "../../index";
 import { DataGrid } from "@mui/x-data-grid";
-import { UserStatuses } from "../../util/Consts";
-import { blockUser } from "../../http/UserHttp";
 import AddProductDialog from "./AddProductDialog";
 import { observer } from "mobx-react-lite";
 
@@ -83,7 +81,7 @@ const AdminProductPage = observer(() => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [productStore]);
 
   const rowClick = ({ row }) => {
     if (selectedRow?.id === row.id) {
@@ -94,18 +92,39 @@ const AdminProductPage = observer(() => {
   };
 
   const toolbarClickHandle = (val) => {
-    console.log(val);
     switch (val) {
       case 0:
+        activeProduct(selectedRow)
+          .then((res) => {
+            productStore.setAllProducts(localUpdateProducts(res));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      case 1:
+        setOpen(true);
+        break;
+      default:
+        console.log("error click");
         break;
     }
   };
 
+  const localUpdateProducts = (res) => {
+    setSelectedRow({});
+    return productStore.allProducts.map((product) =>
+      product.id === res.id ? res : product
+    );
+  };
+
   const addProductHandle = () => {
+    setSelectedRow({});
     setOpen(true);
   };
 
   const addProductHandleClose = () => {
+    setSelectedRow({});
     setOpen(false);
   };
 
@@ -140,7 +159,11 @@ const AdminProductPage = observer(() => {
           }}
         />
       </Stack>
-      <AddProductDialog open={open} onClose={addProductHandleClose} />
+      <AddProductDialog
+        open={open}
+        onClose={addProductHandleClose}
+        edditProps={selectedRow}
+      />
     </Box>
   );
 });
