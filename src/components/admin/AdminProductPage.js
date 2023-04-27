@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Button, Grid, Stack } from "@mui/material";
-import { activeProduct, getProducts } from "../../http/ProductHttp";
+import {
+  activeProduct,
+  deleteProduct,
+  getProducts,
+} from "../../http/ProductHttp";
 import { Context } from "../../index";
 import { DataGrid } from "@mui/x-data-grid";
 import AddProductDialog from "./AddProductDialog";
@@ -94,7 +98,7 @@ const AdminProductPage = observer(() => {
   const toolbarClickHandle = (val) => {
     switch (val) {
       case 0:
-        activeProduct(selectedRow)
+        activeProduct(selectedRow.id)
           .then((res) => {
             productStore.setAllProducts(localUpdateProducts(res));
           })
@@ -104,6 +108,17 @@ const AdminProductPage = observer(() => {
         break;
       case 1:
         setOpen(true);
+        break;
+      case 2:
+        deleteProduct(selectedRow.id)
+          .then((res) => {
+            productStore.setAllProducts(
+              productStore.allProducts.filter((elem) => elem.id !== res.id)
+            );
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         break;
       default:
         console.log("error click");
