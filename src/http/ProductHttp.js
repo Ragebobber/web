@@ -10,12 +10,20 @@ export const addProduct = async (data) => {
   return res.data;
 };
 
-export const activeProduct = async (data) => {
-  const res = await $authHost.put("/api/product/admin/active-product", data);
+export const activeProduct = async (id) => {
+  const res = await $authHost.put("/api/product/admin/active-product/" + id);
   return res.data;
 };
 
 export const edditProduct = async (data) => {
-  const res = await $authHost.put("/api/product/admin/eddit-product", data);
+  const res = await $authHost.put(
+    "/api/product/admin/eddit-product/" + data.id,
+    data
+  );
+  return res.data;
+};
+
+export const deleteProduct = async (id) => {
+  const res = await $authHost.delete("/api/product/admin/delete/" + id);
   return res.data;
 };
