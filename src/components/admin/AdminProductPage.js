@@ -77,15 +77,15 @@ const AdminProductPage = observer(() => {
     },
   ];
 
-  useEffect(() => {
-    getProducts()
-      .then((res) => {
-        productStore.setAllProducts(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [productStore]);
+  // useEffect(() => {
+  //   getProducts()
+  //     .then((res) => {
+  //       productStore.setAllProducts(res);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [productStore]);
 
   const rowClick = ({ row }) => {
     if (selectedRow?.id === row.id) {

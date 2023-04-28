@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   Accordion,
   AccordionActions,
@@ -17,10 +17,13 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { activeSubscription } from "../../http/SubscriptionHttp";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
+import AddSubscriptionDialog from "./AddSubscriptionDialog";
+import dayjs from "dayjs";
 
 const AdminUserSubscription = observer((props) => {
   const { user } = useContext(Context);
   const { open, onClose, userProp } = props;
+  const [openAddSubDialog, setAddSubDialog] = useState(false);
 
   const setActiveBtnLabel = (sub) => {
     return sub.active ? "Deactive" : "Active";
@@ -39,9 +42,10 @@ const AdminUserSubscription = observer((props) => {
           }
           return elem;
         });
-        user.setAllUsers(
-          user.allUsers.map((user) => (user.id === curUser.id ? curUser : user))
-        );
+
+        // user.setAllUsers(
+        //   user.allUsers.map((user) => (user.id === curUser.id ? curUser : user))
+        // );
       })
       .catch((error) => {
         console.log(error);
@@ -49,88 +53,101 @@ const AdminUserSubscription = observer((props) => {
   };
 
   const handleAddSubscription = () => {
-    console.log("add Sub");
+    setAddSubDialog(true);
+  };
+
+  const closeAddSubDialogHandle = () => {
+    setAddSubDialog(false);
   };
 
   return (
-    <Dialog onClose={onClose} open={open} maxWidth="md" fullWidth>
-      <DialogTitle>
-        <Grid container>
-          <Grid item xs={6}>
-            <Typography variant={"h6"}>Subscriptions</Typography>
+    <div>
+      <Dialog onClose={onClose} open={open} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <Grid container>
+            <Grid item xs={6}>
+              <Typography variant={"h6"}>Subscriptions</Typography>
+            </Grid>
+            <Grid item xs={6} sx={{ textAlign: "end" }}>
+              <Button variant={"outlined"} onClick={handleAddSubscription}>
+                Add subscription
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={6} sx={{ textAlign: "end" }}>
-            <Button variant={"outlined"} onClick={handleAddSubscription}>
-              Add subscription
-            </Button>
-          </Grid>
-        </Grid>
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText>Login: {userProp?.login}</DialogContentText>
-        <Stack spacing={2}>
-          {userProp.userSubscription.map((sub) => (
-            <Accordion key={sub.id}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1bh-content"
-                id="panel1bh-header"
-              >
-                <Grid container spacing={1}>
-                  <Grid item xs={3}>
-                    <Typography>{sub.productId.name}</Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    <Typography>
-                      Product status:
-                      <Typography
-                        variant={"span"}
-                        sx={{
-                          color:
-                            sub.productId.status === "ACTIVE" ? "green" : "red",
-                        }}
-                      >
-                        {sub.productId.status}
-                      </Typography>
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Stack>
-                  <Grid container>
-                    <Grid item xs={4}>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>Login: {userProp?.login}</DialogContentText>
+          <Stack spacing={2}>
+            {userProp.userSubscription.map((sub) => (
+              <Accordion key={sub.id}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1bh-content"
+                  id="panel1bh-header"
+                >
+                  <Grid container spacing={1}>
+                    <Grid item xs={3}>
+                      <Typography>{sub.productId.name}</Typography>
+                    </Grid>
+                    <Grid item xs={3}>
                       <Typography>
-                        Subscription active status:{" "}
+                        Product status:
                         <Typography
                           variant={"span"}
                           sx={{
-                            color: sub.active ? "green" : "red",
+                            color:
+                              sub.productId.status === "ACTIVE"
+                                ? "green"
+                                : "red",
                           }}
                         >
-                          {sub.active ? "ACTIVE" : "DEACTIVE"}
+                          {sub.productId.status}
                         </Typography>
                       </Typography>
                     </Grid>
-                    <Grid item xs={4}>
-                      <Typography>Ex date: {sub.expirationDate}</Typography>
-                    </Grid>
                   </Grid>
-                </Stack>
-              </AccordionDetails>
-              <AccordionActions>
-                <Button
-                  variant={"outlined"}
-                  onClick={() => handleDeactiveSub(sub)}
-                >
-                  {setActiveBtnLabel(sub)}
-                </Button>
-              </AccordionActions>
-            </Accordion>
-          ))}
-        </Stack>
-      </DialogContent>
-    </Dialog>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Stack>
+                    <Grid container>
+                      <Grid item xs={4}>
+                        <Typography>
+                          Subscription active status:{" "}
+                          <Typography
+                            variant={"span"}
+                            sx={{
+                              color: sub.active ? "green" : "red",
+                            }}
+                          >
+                            {sub.active ? "ACTIVE" : "DEACTIVE"}
+                          </Typography>
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography>Ex date: {sub.expirationDate}</Typography>
+                      </Grid>
+                    </Grid>
+                  </Stack>
+                </AccordionDetails>
+                <AccordionActions>
+                  <Button
+                    variant={"outlined"}
+                    onClick={() => handleDeactiveSub(sub)}
+                  >
+                    {setActiveBtnLabel(sub)}
+                  </Button>
+                </AccordionActions>
+              </Accordion>
+            ))}
+          </Stack>
+        </DialogContent>
+      </Dialog>
+      <AddSubscriptionDialog
+        open={openAddSubDialog}
+        onClose={closeAddSubDialogHandle}
+        userProps={userProp}
+      />
+    </div>
   );
 });
 
