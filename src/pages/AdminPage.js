@@ -8,9 +8,10 @@ import AdminProductPage from "../components/admin/AdminProductPage";
 import { useNavigate } from "react-router-dom";
 import { AUTH_ROUTE } from "../util/Consts";
 import { observer } from "mobx-react-lite";
+import { getProducts } from "../http/ProductHttp";
 
 const AdminPage = observer(() => {
-  const { user } = useContext(Context);
+  const { user, productStore } = useContext(Context);
 
   const [loading, setLoading] = useState(true);
   const [menuValue, setMenuValue] = useState("Users");
@@ -36,16 +37,37 @@ const AdminPage = observer(() => {
   };
 
   useEffect(() => {
-    getUser()
-      .then((res) => {
-        user.setUser(res);
-      })
-      .catch((error) => {
-        user.setIsAuth(false);
-        console.log(error);
-      })
-      .finally(() => setLoading(false));
-  }, [user]);
+    const getInfo = async () => {
+      getUser()
+        .then((res) => {
+          user.setUser(res);
+        })
+        .catch((error) => {
+          user.setIsAuth(false);
+          console.log(error);
+        });
+
+      getProducts()
+        .then((res) => {
+          productStore.setAllProducts(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+
+    // getUser()
+    //   .then((res) => {
+    //     user.setUser(res);
+    //   })
+    //   .catch((error) => {
+    //     user.setIsAuth(false);
+    //     console.log(error);
+    //   })
+    //   .finally(() => setLoading(false));
+
+    getInfo().finally(() => setLoading(false));
+  }, [user, productStore]);
 
   if (loading || !user.isAdmin)
     return (

@@ -90,8 +90,10 @@ const AddProductDialog = observer((props) => {
   };
 
   useEffect(() => {
-    setProductName(edditProps.name);
-    setProductDescr(edditProps.description);
+    if (hasEdditProps) {
+      setProductName(edditProps.name);
+      setProductDescr(edditProps.description);
+    }
     //setProductStatus(ProductStatus[edditProps.status])
   }, [edditProps]);
 
@@ -121,13 +123,13 @@ const AddProductDialog = observer((props) => {
             variant={"outlined"}
             label={"Product Name"}
             sx={{ mt: 1 }}
-            value={productName}
+            value={productName || ""}
             onChange={edditNameHandle}
           />
           <TextField
             variant={"outlined"}
             label={"Product description"}
-            value={productDescr}
+            value={productDescr || ""}
             onChange={edditDescriptionHande}
           />
           {!hasEdditProps() && (
