@@ -1,10 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Box, Button, Grid, Stack } from "@mui/material";
-import {
-  activeProduct,
-  deleteProduct,
-  getProducts,
-} from "../../http/ProductHttp";
+import { activeProduct, deleteProduct } from "../../http/ProductHttp";
 import { Context } from "../../index";
 import { DataGrid } from "@mui/x-data-grid";
 import AddProductDialog from "./AddProductDialog";
