@@ -18,7 +18,6 @@ import { activeSubscription } from "../../http/SubscriptionHttp";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 import AddSubscriptionDialog from "./AddSubscriptionDialog";
-import dayjs from "dayjs";
 
 const AdminUserSubscription = observer((props) => {
   const { user } = useContext(Context);

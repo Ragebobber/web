@@ -46,7 +46,7 @@ const App = observer(() => {
 
   return (
     <BrowserRouter>
-      <AppRouter />
+      <AppRouter user={user} />
     </BrowserRouter>
   );
 });

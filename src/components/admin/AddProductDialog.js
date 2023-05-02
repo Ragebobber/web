@@ -90,12 +90,11 @@ const AddProductDialog = observer((props) => {
   };
 
   useEffect(() => {
-    if (hasEdditProps) {
-      setProductName(edditProps.name);
-      setProductDescr(edditProps.description);
-    }
+    setProductName(edditProps.name);
+    setProductDescr(edditProps.description);
+
     //setProductStatus(ProductStatus[edditProps.status])
-  }, [edditProps]);
+  }, [edditProps.name, edditProps.description]);
 
   return (
     <Dialog onClose={onClose} open={openHandle()}>
