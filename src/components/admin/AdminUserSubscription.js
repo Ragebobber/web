@@ -10,6 +10,7 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -18,11 +19,16 @@ import { activeSubscription } from "../../http/SubscriptionHttp";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 import AddSubscriptionDialog from "./AddSubscriptionDialog";
+import AddExDateDialog from "./AddExDateDialog";
+import dayjs from "dayjs";
+import CloseIcon from "@mui/icons-material/Close";
 
 const AdminUserSubscription = observer((props) => {
   const { user } = useContext(Context);
   const { open, onClose, userProp } = props;
   const [openAddSubDialog, setAddSubDialog] = useState(false);
+  const [opedAddExDateDialog, setAddExDateDialoh] = useState(false);
+  const [currentSub, setCurrnetSub] = useState({});
 
   const setActiveBtnLabel = (sub) => {
     return sub.active ? "Deactive" : "Active";
@@ -59,20 +65,39 @@ const AdminUserSubscription = observer((props) => {
     setAddSubDialog(false);
   };
 
+  const handleAddExDateSub = (sub) => {
+    setCurrnetSub(sub);
+    setAddExDateDialoh(true);
+  };
+
+  const closeAddExDateSub = () => {
+    setAddExDateDialoh(false);
+    setCurrnetSub({});
+  };
+
   return (
     <div>
       <Dialog onClose={onClose} open={open} maxWidth="md" fullWidth>
         <DialogTitle>
-          <Grid container>
-            <Grid item xs={6}>
-              <Typography variant={"h6"}>Subscriptions</Typography>
+          <Stack spacing={1}>
+            <Grid container>
+              <Grid item xs={12} sx={{ textAlign: "end" }}>
+                <IconButton aria-label="close" onClick={onClose}>
+                  <CloseIcon />
+                </IconButton>
+              </Grid>
             </Grid>
-            <Grid item xs={6} sx={{ textAlign: "end" }}>
-              <Button variant={"outlined"} onClick={handleAddSubscription}>
-                Add subscription
-              </Button>
+            <Grid container>
+              <Grid item xs={6}>
+                <Typography variant={"h6"}>Subscriptions</Typography>
+              </Grid>
+              <Grid item xs={6} sx={{ textAlign: "end" }}>
+                <Button variant={"outlined"} onClick={handleAddSubscription}>
+                  Add subscription
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          </Stack>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>Login: {userProp?.login}</DialogContentText>
@@ -123,12 +148,21 @@ const AdminUserSubscription = observer((props) => {
                         </Typography>
                       </Grid>
                       <Grid item xs={4}>
-                        <Typography>Ex date: {sub.expirationDate}</Typography>
+                        <Typography>
+                          Ex date:{" "}
+                          {dayjs(sub.expirationDate).format("DD/MM/YYYY")}
+                        </Typography>
                       </Grid>
                     </Grid>
                   </Stack>
                 </AccordionDetails>
                 <AccordionActions>
+                  <Button
+                    variant={"outlined"}
+                    onClick={() => handleAddExDateSub(sub)}
+                  >
+                    Add ex date
+                  </Button>
                   <Button
                     variant={"outlined"}
                     onClick={() => handleDeactiveSub(sub)}
@@ -144,6 +178,12 @@ const AdminUserSubscription = observer((props) => {
       <AddSubscriptionDialog
         open={openAddSubDialog}
         onClose={closeAddSubDialogHandle}
+        userProps={userProp}
+      />
+      <AddExDateDialog
+        open={opedAddExDateDialog}
+        onClose={closeAddExDateSub}
+        currentSub={currentSub}
         userProps={userProp}
       />
     </div>

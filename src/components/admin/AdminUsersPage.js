@@ -6,6 +6,7 @@ import { Box, Button, Grid } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import { UserStatuses } from "../../util/Consts";
 import AdminUserSubscription from "./AdminUserSubscription";
+import dayjs from "dayjs";
 
 const toolbar = (props) => {
   const { user, handleClickFn } = props;
@@ -75,6 +76,7 @@ const AdminUsersPage = observer(() => {
       headerName: "DateOfRegistration",
       type: "number",
       flex: 1,
+      valueFormatter: (params) => dayjs(params.value).format("DD/MM/YYYY"),
     },
   ];
 
