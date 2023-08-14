@@ -27,6 +27,7 @@ const AddProductDialog = observer((props) => {
   const [productStatus, setProductStatus] = useState(ProductStatus.ACTIVE);
   const [productName, setProductName] = useState("");
   const [productDescr, setProductDescr] = useState("");
+  const [productTarget, setProductTarget] = useState("");
 
   const handleProductStatusChange = (event) => {
     setProductStatus(event.target.value);
@@ -37,6 +38,7 @@ const AddProductDialog = observer((props) => {
       name: productName,
       description: productDescr,
       status: productStatus,
+      altName: productTarget,
     };
     addProduct(data)
       .then((res) => {
@@ -53,6 +55,7 @@ const AddProductDialog = observer((props) => {
       id: edditProps.id,
       name: productName,
       description: productDescr,
+      altName: productTarget,
     };
     edditProduct(data)
       .then((res) => {
@@ -89,12 +92,16 @@ const AddProductDialog = observer((props) => {
     );
   };
 
+  const editProductTarget = (event) => {
+    setProductTarget(event.target.value);
+  };
+
   useEffect(() => {
     setProductName(edditProps.name);
     setProductDescr(edditProps.description);
-
+    setProductTarget(edditProps.altName);
     //setProductStatus(ProductStatus[edditProps.status])
-  }, [edditProps.name, edditProps.description]);
+  }, [edditProps.name, edditProps.description, edditProps.altName]);
 
   return (
     <Dialog onClose={onClose} open={openHandle()}>
@@ -117,13 +124,20 @@ const AddProductDialog = observer((props) => {
         ) : null}
       </DialogTitle>
       <DialogContent>
-        <Stack spacing={2}>
+        <Stack spacing={1} sx={{ mt: 1 }}>
           <TextField
             variant={"outlined"}
             label={"Product Name"}
             sx={{ mt: 1 }}
             value={productName || ""}
             onChange={edditNameHandle}
+          />
+
+          <TextField
+            variant={"outlined"}
+            label={"Product Target"}
+            value={productDescr || ""}
+            onChange={editProductTarget}
           />
           <TextField
             variant={"outlined"}

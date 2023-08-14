@@ -69,7 +69,13 @@ const AdminProductPage = observer(() => {
       field: "description",
       headerName: "Description",
       type: "String",
-      flex: 0,
+      flex: 1,
+    },
+    {
+      field: "altName",
+      headerName: "Target",
+      type: "String",
+      flex: 1,
     },
   ];
 
