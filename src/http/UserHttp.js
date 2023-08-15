@@ -30,3 +30,13 @@ export const getUserSubs = async () => {
   const res = await $authHost.get("/api/user/subs");
   return res.data;
 };
+
+export const getAllUsers = async () => {
+  const res = await $authHost.get("/api/user/admin/users");
+  return res.data;
+};
+
+export const blockUser = async ({ login }) => {
+  const res = await $authHost.post("/api/user/admin/block/user", { login });
+  return res.data;
+};

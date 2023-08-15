@@ -1,11 +1,18 @@
 import axios from "axios";
+import * as https from "https";
 
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 const $host = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
+  //withCredentials: false,
+  httpsAgent,
 });
 
 const $authHost = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
+  httpsAgent,
 });
 
 const authInterceptor = (config) => {

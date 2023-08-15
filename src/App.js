@@ -14,41 +14,40 @@ const App = observer(() => {
 
   useEffect(() => {
     check()
-        .then((data) => {
-          user.setIsAuth(true);
-          user.setIsAdmin(data.role === Roles.ADMIN);
-          // user.setUser(true);
-          user.setUserRole(data.role);
-        })
-        .catch((error) => {
-          console.log(error);
-          user.setIsAuth(false);
-        })
-        .finally(() => setLoading(false));
+      .then((data) => {
+        user.setIsAuth(true);
+        user.setIsAdmin(data.role === Roles.ADMIN);
+        // user.setUser(true);
+        user.setUserRole(data.role);
+      })
+      .catch((error) => {
+        user.setIsAuth(false);
+      })
+      .finally(() => setLoading(false));
   }, [user]);
 
   if (loading)
     return (
-        <Box
-            sx={{
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              position: "absolute",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-        >
-          <CircularProgress size={80} />
-        </Box>
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <CircularProgress size={80} />
+      </Box>
     );
 
   return (
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
+    <BrowserRouter>
+      <AppRouter user={user} />
+    </BrowserRouter>
   );
 });
 
