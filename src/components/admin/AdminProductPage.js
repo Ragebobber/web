@@ -5,6 +5,7 @@ import { Context } from "../../index";
 import { DataGrid } from "@mui/x-data-grid";
 import AddProductDialog from "./AddProductDialog";
 import { observer } from "mobx-react-lite";
+import AddFileDialog from "./AddFileDialog";
 
 const toolbar = (props) => {
   const { productProps, handleClickFn } = props;
@@ -50,6 +51,7 @@ const AdminProductPage = observer(() => {
 
   const [selectedRow, setSelectedRow] = useState({});
   const [open, setOpen] = React.useState(false);
+  const [openFile, setOpenFile] = React.useState(false);
 
   const columns = [
     { field: "id", headerName: "ID", type: "number", flex: 0 },
@@ -145,6 +147,16 @@ const AdminProductPage = observer(() => {
     setOpen(false);
   };
 
+  const addFileHandle = () => {
+    setSelectedRow({});
+    setOpenFile(true);
+  };
+
+  const addFileHandleClose = () => {
+    setSelectedRow({});
+    setOpenFile(false);
+  };
+
   return (
     <Box>
       <Stack spacing={2}>
@@ -152,6 +164,11 @@ const AdminProductPage = observer(() => {
           <Grid item xs={3}>
             <Button variant={"outlined"} onClick={addProductHandle}>
               Add product
+            </Button>
+          </Grid>
+          <Grid item xs={3}>
+            <Button variant={"outlined"} onClick={addFileHandle}>
+              Add file
             </Button>
           </Grid>
         </Grid>
@@ -181,6 +198,7 @@ const AdminProductPage = observer(() => {
         onClose={addProductHandleClose}
         edditProps={selectedRow}
       />
+      <AddFileDialog open={openFile} onClose={addFileHandleClose} />
     </Box>
   );
 });
