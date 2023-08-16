@@ -13,6 +13,7 @@ const UserPage = observer(() => {
   const { user, userSubs } = useContext(Context);
 
   const [menuValue, setMenuValue] = useState("Profile");
+
   const [loading, setLoading] = useState(true);
   const navigator = useNavigate();
 
@@ -34,7 +35,6 @@ const UserPage = observer(() => {
     getUserSubs()
       .then((res) => {
         userSubs.setUserSubs(res);
-        console.log("response subs", res);
       })
       .catch((error) => {
         console.log(error);

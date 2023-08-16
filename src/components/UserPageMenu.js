@@ -1,5 +1,13 @@
 import React from "react";
-import { ListItemText, MenuItem, MenuList, Paper } from "@mui/material";
+import {
+  Divider,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Paper,
+} from "@mui/material";
+import { downloadClient } from "../http/FileHttp";
+import fileDownload from "js-file-download";
 
 const UserPageMenu = (props) => {
   const { menuClickHandle, currentItem } = props;
@@ -19,6 +27,16 @@ const UserPageMenu = (props) => {
     },
   ];
 
+  const handleDownloadClient = () => {
+    downloadClient()
+      .then((res) => {
+        fileDownload(res.data, "client.zip");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <Paper>
       <MenuList variant={"menu"}>
@@ -33,6 +51,10 @@ const UserPageMenu = (props) => {
             </MenuItem>,
           ];
         })}
+        <Divider />
+        <MenuItem onClick={() => handleDownloadClient()}>
+          <ListItemText>Download client</ListItemText>
+        </MenuItem>
       </MenuList>
     </Paper>
   );
