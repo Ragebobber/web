@@ -136,7 +136,7 @@ const AddProductDialog = observer((props) => {
           <TextField
             variant={"outlined"}
             label={"Product Target"}
-            value={productDescr || ""}
+            value={productTarget || ""}
             onChange={editProductTarget}
           />
           <TextField
